@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Submit to Google Sheet</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 30px;
+    }
+    input, textarea {
+      width: 300px;
+      padding: 8px;
+      margin: 8px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #responseMsg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Submit Your Info</h2>
+  <form id="dataForm">
+    <input type="text" name="name" placeholder="Enter your name" required><br>
+    <input type="email" name="email" placeholder="Enter your email" required><br>
+    <input type="text" name="firm" placeholder="Firm name" required><br>
+    <input type="text" name="post" placeholder="Post/designation" required><br>
+    <textarea name="response" placeholder="Your response" required></textarea><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="responseMsg"></p>
+
+  <script>
+    const form = document.getElementById("dataForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = {
+        name: form.name.value,
+        email: form.email.value,
+        firm: form.firm.value,
+        post: form.post.value,
+        response: form.response.value
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbx5NcND91PFH4Ze_MuK5T56wf1b-n0dcFRbWamTGIb2h3VubrQteXs6jJrzS4IdDJZlDg/exec", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("responseMsg").textContent = "✅ Data submitted successfully!";
+        form.reset();
+      })
+      .catch(err => {
+        document.getElementById("responseMsg").textContent = "❌ Error submitting data.";
+        console.error(err);
+      });
+    });
+  </script>
+
+</body>
+</html>
